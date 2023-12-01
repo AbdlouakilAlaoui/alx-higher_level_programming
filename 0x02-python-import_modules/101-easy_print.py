@@ -1,2 +1,2 @@
 #!/usr/bin/python3
-import esy_print
+import (esy_print)
