@@ -1,53 +1,45 @@
-#include "lists.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-/**
-*add_nodeint - adds a new node at the beginning of a listint_t list
-*@head: head of listint_t
-*@n: int to add in listint_t list
-*Return: address of the new element, or NULL if it failed
-*/
-listint_t *add_nodeint(listint_t **head, const int n)
-{
-	listint_t *new;
+typedef struct listint {
+    int data;
+    struct listint *next;
+} listint_t;
 
-	new = malloc(sizeof(listint_t));
-	if (new == NULL)
-		return (NULL);
-	new->n = n;
-	new->next = *head;
-	*head = new;
-	return (new);
+listint_t* reverseList(listint_t* head) {
+    listint_t *prev = NULL, *current = head, *next = NULL;
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
 }
-/**
-*is_palindrome - identify if a syngle linked list is palindrome
-*@head: head of listint_t
-*Return: 1 if it is palindrome else 0
-*/
+
 int is_palindrome(listint_t **head)
 {
-	listint_t *head2 = *head;
-	listint_t *aux = NULL, *aux2 = NULL;
+    if (*head == NULL || (*head)->next == NULL){
+        return 1; // An empty list or a list with one element is a palindrome
+    }
 
-	if (*head == NULL || head2->next == NULL)
-		return (1);
-	while (head2 != NULL)
-	{
-		add_nodeint(&aux, head2->n);
-		head2 = head2->next;
-	}
-	aux2 = aux;
-	while (*head != NULL)
-	{
-		if ((*head)->n != aux2->n)
-		{
-			free_listint(aux);
-			return (0);
-		}
-		*head = (*head)->next;
-		aux2 = aux2->next;
-	}
-	free_listint(aux);
-	return (1);
+    listint_t *slow = *head, *fast = *head;
+
+    // Find the middle of the linked list
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+ listint_t* reversedSecondHalf = reverseList(slow);
+
+    listint_t *firstHalf = *head, *secondHalf = reversedSecondHalf;
+    while (secondHalf != NULL) {
+        if (firstHalf->data != secondHalf->data) {
+            return 0; // Not a palindrome
+        }
+        firstHalf = firstHalf->next;
+        secondHalf = secondHalf->next;
+    }
+
+    return 1;
 }
